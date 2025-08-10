@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Project Deep Code — Archive</title>
+  <style>
+    /* Minimal, self-contained styling so this works on free hosts */
+    :root{
+      --bg:#050507;
+      --text:#dfe7ee;
+      --accent:#7fffd4;
+      --glitch:#ff2d95
+    }
+    html,body{
+      height:100%;
+      margin:0;
+      background:radial-gradient(ellipse at center, #071017 0%, var(--bg) 60%);
+      color:var(--text);
+      font-family: "Courier New", Courier, monospace
+    }
+    .container{max-width:900px;margin:40px auto;padding:28px;background:rgba(0,0,0,0.35);border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.6)}
+    h1{font-size:26px;margin:0 0 6px;color:var(--accent)}
+    .muted{color:#9aa6b2;font-size:13px}
+    .changelog{background:#00000010;padding:14px;border-radius:6px;margin-top:18px;line-height:1.5}
+    .fake-btn{display:inline-block;padding:10px 14px;border-radius:6px;background:#111;border:1px solid #1f1f1f;color:var(--text);cursor:pointer;margin-top:14px}
+    .fake-btn:active{transform:translateY(1px)}
+    .terminal{background:#000;padding:12px;border-radius:6px;margin-top:18px;min-height:120px;color:#9fd3ff;overflow:auto}
+    .glitch{position:relative}
+    .glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;opacity:0.7}
+    .glitch::before{color:var(--glitch);mix-blend-mode:screen;transform:translate(2px,-1px)}
+    .glitch::after{color:var(--accent);mix-blend-mode:screen;transform:translate(-2px,1px)}
+    .flash-url{display:inline-block;font-weight:700;padding:4px 6px;border-radius:4px;background:rgba(255,255,255,0.03);margin-left:6px}
+    /* quick flash animation used sparingly in the layout */
+    @keyframes quickflash{0%{opacity:0}10%{opacity:1}30%{opacity:0}100%{opacity:0}}
+    .flash-brief{animation:quickflash 2s linear 1}
+    /* hidden elements for ARG players */
+    #hidden-clues{display:none}
+    /* tiny easter: flicker background */
+    @keyframes bgflicker{0%{filter:brightness(1)}50%{filter:brightness(1.05)}100%{filter:brightness(1)}}
+    body{animation:bgflicker 8s infinite}
+    footer{margin-top:20px;color:#82909b;font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Project Deep Code — Archive</h1>
+    <div class="muted">Last known update: <strong>v?? (corrupt)</strong></div>
+
+    <div class="changelog">
+      <div style="font-weight:600;margin-bottom:8px">CHANGELOG</div>
+      <div class="terminal">
+        v1.0 — Initial release<br>
+        v1.1 — Beacon module added<br>
+        v1.2 — Disable delete (safety check)<br>
+        v1.3 — Minor watchers added<br>
+        v1.4 — Self-update enabled<br>
+        v?? — ERROR: LOG CORRUPT<br>
+      </div>
+
+      <div style="margin-top:12px">The author notes: <span class="glitch" data-text="" id="author-note">—</span></div>
+
+      <button class="fake-btn" id="delete-btn">DELETE MOD</button>
+      <div id="delete-result" style="margin-top:10px;color:#ffb3b3;display:none">ACCESS DENIED: YOU ARE NOT THE CREATOR</div>
+    </div>
+
+    <div style="margin-top:22px">
+      <div style="font-weight:600">TERMINAL OUTPUT</div>
+      <div class="terminal" id="terminal">
+        <div id="tline">Initializing archive viewer...</div>
+      </div>
+    </div>
+
+    <div style="margin-top:18px">
+      <div style="font-weight:600">UNOFFICIAL NOTES</div>
+      <p class="muted">This mirror contains recovered fragments. Use with caution. The site may contain corrupted strings — do not paste them into unknown consoles.</p>
+
+      <div style="margin-top:8px">Recovered fragment: <span class="flash-url flash-brief" id="fragflash">aHR0cHM6Ly8=</span></div>
+    </div>
+
+    <footer>
+      <div>Project Deep Code — Mirror</div>
+      <div style="margin-top:6px">If you are the original author, contact: <span style="color:#b2e0ff">creator@null</span></div>
+    </footer>
+  </div>
+
+  <!-- HIDDEN CLUES FOR ARG PLAYERS -->
+  <!--
+    Book clue fragments stored here (visible to players who view source):
+    1) Base64 fragment for https://  => aHR0cHM6Ly8=
+    2) Binary fragment for "pdcode." => 01110000 01100100 01100011 01101111 01100100 01100101 00101110
+    3) ROT13 fragment for "com" => pbz
+    4) Caesar shift +5 for "worldsecret" => xtkmy3yxknsl
+
+    Extra easter bits:
+    - Hidden binary ("Help"): 01001000 01100101 01101100 01110000
+    - HTML comment hint: <!-- SHIFT:5 --> near the ocean fragment
+  -->
+
+  <div id="hidden-clues">
+    <div id="clue1">aHR0cHM6Ly8=</div>
+    <div id="clue2">01110000 01100100 01100011 01101111 01100100 01100101 00101110</div>
+    <div id="clue3">pbz</div>
+    <div id="clue4">xtkmy3yxknsl</div>
+  </div>
+
+  <script>
+    // Lightweight client-side behavior — no external deps so it works on free hosts
+    (function(){
+      const term = document.getElementById('terminal');
+      const tline = document.getElementById('tline');
+      const note = document.getElementById('author-note');
+      const frag = document.getElementById('fragflash');
+
+      // Small simulated terminal output to add atmosphere
+      const lines = [
+        'RECORD: RECOVERED PACK v1.4',
+        'SCANNING... 42% [█████-----]',
+        'INTEGRITY: PARTIAL',
+        'LINK FRAGMENTS PRESENT',
+        'USER: UNKNOWNPLAYER',
+        'RECOMMENDATION: DO NOT ATTEMPT REMOVAL'
+      ];
+
+      let i=0;
+      function drip(){
+        if(i<lines.length){
+          const el = document.createElement('div');
+          el.textContent = lines[i++];
+          term.appendChild(el);
+          term.scrollTop = term.scrollHeight;
+          setTimeout(drip, 900);
+        } else {
+          // reveal a subtle author note that looks corrupted
+          note.textContent = '— author: j.d. (unsigned) —';
+          // show the brief flash again when terminal finishes
+          frag.classList.remove('flash-brief');
+          void frag.offsetWidth; // restart animation
+          frag.classList.add('flash-brief');
+        }
+      }
+      setTimeout(drip, 800);
+
+      // fake delete action
+      document.getElementById('delete-btn').addEventListener('click', function(){
+        document.getElementById('delete-result').style.display = 'block';
+        // additional fake behavior: add an obfuscated comment to the DOM (visible in inspector)
+        const c = document.createElement('div');
+        c.style.display='none';
+        c.textContent = 'ACCESS_DENIED';
+        c.id = 'deny-'+Date.now();
+        document.body.appendChild(c);
+      });
+
+      // tiny easter: clicking terminal reveals a hidden fragment panel (for players)
+      term.addEventListener('click', function(){
+        const hc = document.getElementById('hidden-clues');
+        if(hc.style.display === 'block'){
+          hc.style.display='none';
+          alert('Hidden clues re-hidden');
+        } else {
+          hc.style.display='block';
+          alert('Hidden clues revealed — check page source for more.');
+        }
+      });
+
+      // quick protection: disable clipboard copying of terminal (adds atmosphere)
+      term.addEventListener('copy', function(e){
+        e.preventDefault();
+        alert('COPY DISABLED: Fragment integrity protected.');
+      });
+
+    })();
+  </script>
+</body>
+</html>
